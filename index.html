@@ -2,22 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <!-- 禁止縮放，避免行動裝置 300ms 延遲 -->
   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
-  <title>我要長大 (優化版)</title>
+  <title>我要長大 (安定後警戒 + 統一對照圖)</title>
   <style>
-    /* ===========================
-       1. 基本排版 & 防捲動
-       =========================== */
+    /*****************************************
+     * 1. 頁面基礎 + 防捲動
+     *****************************************/
     html, body {
       margin: 0; 
       padding: 0;
       height: 100%;
       overflow: hidden; 
-      touch-action: none;
+      touch-action: none; 
       font-family: sans-serif;
       background: #f0f0f0;
     }
-
     .main {
       display: flex;
       flex-direction: column;
@@ -33,9 +33,9 @@
       text-align: center;
     }
 
-    /* ===========================
-       2. 記分板 & 下一顆
-       =========================== */
+    /*****************************************
+     * 2. 記分板
+     *****************************************/
     .scoreboard {
       width: 600px;
       max-width: 90%;
@@ -45,48 +45,44 @@
       margin: 0.5rem auto 1rem auto;
       box-sizing: border-box;
     }
-
     .score {
       font-size: 1.3rem;
       font-weight: bold;
     }
-
     .best-score {
       font-size: 1rem;
       color: #333;
     }
-
     .next-ball-info {
       display: flex;
       align-items: center;
       gap: 0.5rem;
       font-size: 1rem;
     }
-
-    /* 下一顆球(固定 30×30)，只改顏色 */
+    /* 固定 30×30, 只改顏色/圖片 */
     #nextBallPreview {
       width: 30px;
       height: 30px;
       border-radius: 50%;
-      background-color: #ccc; /* fallback */
+      background-color: #ccc;
     }
 
-    /* ===========================
-       3. 容器 (高度可調小)
-       =========================== */
+    /*****************************************
+     * 3. 容器
+     *****************************************/
     .game-container {
       position: relative;
       width: 600px; 
       max-width: 90%;
-      height: 500px;  /* 可以縮小一點 */
+      height: 500px;  /* 可以縮小以測試上方球完整顯示 */
       background-color: #fff;
       border: 4px solid #888;
       border-radius: 8px;
-      overflow: hidden; /* 讓球超出時不顯示，若想顯示可改 visible */
+      overflow: hidden; /* 若想看到球超出可改 visible */
       cursor: pointer;
     }
 
-    /* 容器網格背景 (可自行移除) */
+    /* 可自行移除網格背景 */
     .game-container::before {
       content: "";
       position: absolute;
@@ -99,10 +95,7 @@
       z-index: 1;
     }
 
-    /* 
-      4. 警戒線: 改用 dashed 紅線, 這裡預設放 y=100px (可調)
-      先隱藏 
-    */
+    /* 警戒線(預設 y=100px) */
     .warning-line {
       position: absolute;
       left: 0;
@@ -111,12 +104,12 @@
       border-top: 3px dashed red;
       z-index: 3;
       pointer-events: none;
-      display: none; 
+      display: none;
     }
 
-    /* 
-      5. 球
-    */
+    /*****************************************
+     * 4. 球
+     *****************************************/
     .current-ball, .placed-ball {
       position: absolute;
       border-radius: 50%;
@@ -127,9 +120,9 @@
       z-index: 2;
     }
 
-    /* 
-      6. 遊戲結束遮罩
-    */
+    /*****************************************
+     * 5. 遊戲結束遮罩
+     *****************************************/
     .game-over-mask {
       position: absolute;
       inset: 0;
@@ -153,16 +146,16 @@
       border-radius: 8px;
     }
 
-    /* 
-      7. 最下方的「由小到大對照圖」
-    */
+    /*****************************************
+     * 6. 最下方對照圖(尺寸統一)
+     *****************************************/
     .legend-container {
       margin-top: 1rem;
       display: flex;
       flex-direction: row;
       justify-content: center;
-      flex-wrap: wrap;
       gap: 1rem;
+      flex-wrap: wrap;
     }
     .legend-ball {
       display: flex;
@@ -172,7 +165,10 @@
       color: #333;
       gap: 0.2rem;
     }
+    /* 統一 30×30 大小即可 */
     .legend-ball .ball-shape {
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
       background-position: center;
       background-repeat: no-repeat;
@@ -183,7 +179,7 @@
 </head>
 <body>
   <div class="main">
-    <h1>我要長大 (優化版)</h1>
+    <h1>我要長大 (安定後警戒 + 統一對照圖)</h1>
 
     <!-- 記分板 -->
     <div class="scoreboard">
@@ -197,10 +193,9 @@
 
     <!-- 容器 -->
     <div class="game-container" id="gameContainer">
-      <!-- 警戒線 (預設 y=100px) -->
       <div class="warning-line" id="warningLine"></div>
 
-      <!-- 遊戲結束畫面 -->
+      <!-- 結束畫面 -->
       <div class="game-over-mask" id="gameOverMask" style="display:none;">
         <h2>遊戲結束!</h2>
         <p id="finalScoreText" style="margin-bottom:1rem;">最終分數: 0</p>
@@ -208,47 +203,48 @@
       </div>
     </div>
 
-    <!-- 對照圖: 由小到大 (10顆) -->
-    <div class="legend-container">
-      <!-- 這裡示範用球1~10做對照，僅用顏色，可自行改圖片 -->
-    </div>
+    <!-- 最下方對照圖 -->
+    <div class="legend-container" id="legendContainer"></div>
   </div>
 
   <script>
     /********************************************************
-     * A. 設定
+     * A. 基本設定
      ********************************************************/
     const BALL_CONFIGS = [
-      { size: 80,   color: '#FF9999', score: 2   },
-      { size: 100,  color: '#99FF99', score: 4   },
-      { size: 140,  color: '#9999FF', score: 8   },
-      { size: 170,  color: '#FFFF99', score: 16  },
-      { size: 190,  color: '#FF99FF', score: 32  },
-      { size: 220,  color: '#99FFFF', score: 64  },
-      { size: 300,  color: '#FF8000', score: 128 },
-      { size: 350,  color: '#8000FF', score: 256 },
-      { size: 370,  color: '#FF0080', score: 512 },
-      { size: 400,  color: '#0080FF', score: 1024}
+      { size: 80,   color: '#FF9999', score: 2   }, // 大小1
+      { size: 100,  color: '#99FF99', score: 4   }, // 大小2
+      { size: 140,  color: '#9999FF', score: 8   }, // 大小3
+      { size: 170,  color: '#FFFF99', score: 16  }, // 大小4
+      { size: 190,  color: '#FF99FF', score: 32  }, // 大小5
+      { size: 220,  color: '#99FFFF', score: 64  }, // 大小6
+      { size: 300,  color: '#FF8000', score: 128 }, // 大小7
+      { size: 350,  color: '#8000FF', score: 256 }, // 大小8
+      { size: 370,  color: '#FF0080', score: 512 }, // 大小9
+      { size: 400,  color: '#0080FF', score: 1024} // 大小10
     ];
+    // 只隨機前4種 (index=0~3)
+    const MAX_INDEX_FOR_RANDOM = 4;
+    
+    const WARNING_ZONE = 100; // 警戒線 y=100
+    const STORAGE_KEY  = 'myBestScore_v3';
 
-    const MAX_INDEX_FOR_RANDOM = 4;  // 前4種(索引0~3)
-    const WARNING_ZONE = 100;       // 警戒線 Y 位置
-    const STORAGE_KEY = 'myBestScore_v3';
-
+    // 容器大小 (可自行加 onResize 做自適應)
     let containerWidth  = 600;
     let containerHeight = 500;
-    let gameOver = false;
 
+    let gameOver = false;
     let balls = [];
-    let currentBall = null; 
+    let currentBall = null;
     let nextBall = null;
     let score = 0;
     let bestScore = 0;
 
-    // 當球底部( y + size/2 ) < WARNING_ZONE => 結束 (但現改為：球「安定」後才判斷)
+    // 重力 & 摩擦
     let gravity  = 0.5;
     let friction = 0.99;
 
+    // 用於控制待放置球的 x
     let mouseX = 0;
 
     // DOM
@@ -260,73 +256,70 @@
     const finalScoreText  = document.getElementById('finalScoreText');
     const restartBtn      = document.getElementById('restartBtn');
     const warningLine     = document.getElementById('warningLine');
-    const legendContainer = document.querySelector('.legend-container');
+    const legendContainer = document.getElementById('legendContainer');
 
     /********************************************************
      * B. 初始化
      ********************************************************/
     window.addEventListener('load', initGame);
-
     function initGame() {
       // 載入 bestScore
-      let saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) bestScore = parseInt(saved,10) || 0;
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) bestScore = parseInt(saved, 10) || 0;
       bestScoreText.textContent = '歷史最佳: ' + bestScore;
 
-      mouseX = containerWidth / 2;
-
-      // 設置警戒線位置
+      mouseX = containerWidth/2;
+      // 警戒線位置
       warningLine.style.top = WARNING_ZONE + 'px';
-      warningLine.style.display = 'none'; // 預設隱藏
+      warningLine.style.display = 'none';
 
-      // 生成 currentBall & nextBall
+      // 生成球
       generateNewBall();
       generateNewBall();
 
-      // 事件
+      // 綁定事件
       gameContainer.addEventListener('pointermove', handlePointerMove);
       gameContainer.addEventListener('pointerdown', handleContainerDown);
       restartBtn.addEventListener('pointerdown', resetGame);
 
-      // 生成對照圖
+      // 建立對照圖
       createLegend();
 
       requestAnimationFrame(gameLoop);
     }
 
     /********************************************************
-     * C. 對照圖 (由小到大)
+     * C. 生成對照圖 (統一尺寸 30×30)
      ********************************************************/
     function createLegend() {
-      // BALL_CONFIGS[0] ~ [9]
-      BALL_CONFIGS.forEach((cfg, index) => {
-        const div = document.createElement('div');
-        div.className = 'legend-ball';
-        
+      BALL_CONFIGS.forEach((cfg, i) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'legend-ball';
+
         const ballDiv = document.createElement('div');
         ballDiv.className = 'ball-shape';
-        ballDiv.style.width = cfg.size / 5 + 'px';  // 對照圖可以縮小
-        ballDiv.style.height= cfg.size / 5 + 'px';
         ballDiv.style.backgroundColor = cfg.color;
-        
-        const label = document.createElement('span');
-        label.textContent = `大小${index+1} (${cfg.size})`;
+        // 統一30×30
+        ballDiv.style.width = '30px';
+        ballDiv.style.height= '30px';
 
-        div.appendChild(ballDiv);
-        div.appendChild(label);
-        legendContainer.appendChild(div);
+        const label = document.createElement('span');
+        label.textContent = `大小${i+1}`;
+
+        wrapper.appendChild(ballDiv);
+        wrapper.appendChild(label);
+        legendContainer.appendChild(wrapper);
       });
     }
 
     /********************************************************
-     * D. 事件: 滑鼠
+     * D. 滑鼠事件
      ********************************************************/
     function handlePointerMove(e) {
       if (gameOver || !currentBall) return;
       let rect = gameContainer.getBoundingClientRect();
       let x = e.clientX - rect.left;
-      let r = currentBall.size / 2;
-
+      let r = currentBall.size/2;
       if (x < r) x = r;
       if (x > containerWidth - r) x = containerWidth - r;
       mouseX = x;
@@ -338,36 +331,34 @@
     }
 
     /********************************************************
-     * E. 生成球 & 下一顆球預覽
+     * E. 生成球 & 下一顆
      ********************************************************/
     function generateNewBall() {
-      let idx = Math.floor(Math.random() * MAX_INDEX_FOR_RANDOM);
-      let config = BALL_CONFIGS[idx];
-      let newData = {
-        size: config.size,
-        color: config.color,
-        score: config.score
+      const idx = Math.floor(Math.random() * MAX_INDEX_FOR_RANDOM);
+      const cfg = BALL_CONFIGS[idx];
+      const newData = {
+        size: cfg.size,
+        color: cfg.color,
+        score: cfg.score
       };
-
       if (!currentBall) {
         currentBall = newData;
       } else {
         nextBall = newData;
-        // 固定 30×30，只改顏色
+        // 預覽: 30×30，只改顏色
         nextBallPreview.style.backgroundColor = nextBall.color;
       }
     }
 
     /********************************************************
-     * F. 放置球: 一開始完整顯示在容器「頂端」裡面
+     * F. 放置球: 一開始完整顯示在容器「頂端」裡
      ********************************************************/
     function placeCurrentBall() {
-      let r = currentBall.size / 2;
-      // 讓球的中心位於 y = r (剛好貼著容器頂端內部)
-      // 這樣可保證球「完整地在容器裡一開始可見」
-      let nb = {
+      const r = currentBall.size/2;
+      // 讓球中心 y = r (貼容器頂，保證球完整在容器內)
+      const newBall = {
         x: mouseX,
-        y: r, 
+        y: r,
         size: currentBall.size,
         color: currentBall.color,
         score: currentBall.score,
@@ -375,15 +366,15 @@
         velocityY: 0,
         id: Date.now() + Math.random()
       };
-      balls.push(nb);
+      balls.push(newBall);
 
-      // 放置分數 => 10 * sizeLevel
-      let idx = BALL_CONFIGS.findIndex(c => c.size === nb.size);
-      let sizeLevel = idx + 1;
-      let baseScore = 10 * sizeLevel;
-      score += baseScore;
+      // 放置分數 => 10 × (sizeLevel)
+      const idx = BALL_CONFIGS.findIndex(c => c.size === newBall.size);
+      const level = idx + 1;
+      score += (10 * level);
       scoreText.textContent = '分數: ' + score;
 
+      // 切換
       currentBall = nextBall;
       generateNewBall();
     }
@@ -393,37 +384,15 @@
      ********************************************************/
     function gameLoop() {
       if (!gameOver) {
-        updateBalls();
-        checkCollisions();
-        render();
+        updateBalls();      // 重力 & 反彈
+        checkCollisions();  // 合併 / 彈開
+        render();           // 繪製
       }
       requestAnimationFrame(gameLoop);
     }
 
-    /**
-     * 每顆球「到達地板」或「碰撞完畢」後再檢查警戒線
-     * 所以在 updateBalls() / mergeBalls() / resolveCollision() 等「穩定」階段呼叫 checkWarningZone()
-     * 為簡化，這裡選擇在「到達地板」(速度歸 0) 或「合併完」呼叫
-     */
-    function checkWarningZone() {
-      // 只要有球的「底部」(y + size/2) < WARNING_ZONE => 結束
-      let showWarning = false;
-      for (let b of balls) {
-        let bottom = b.y + b.size/2;
-        if (bottom < WARNING_ZONE) {
-          endGame();
-          return;
-        }
-        // 若有球的 bottom 靠近 WARNING_ZONE (bottom < WARNING_ZONE+50) => 顯示
-        if (bottom < WARNING_ZONE+50) {
-          showWarning = true;
-        }
-      }
-      warningLine.style.display = showWarning ? 'block' : 'none';
-    }
-
     /********************************************************
-     * H. 更新球(重力 & 簡易彈跳)
+     * H. 重力 & 反彈
      ********************************************************/
     function updateBalls() {
       for (let i=0; i<balls.length; i++) {
@@ -431,19 +400,20 @@
         b.velocityY += gravity;
         let newY = b.y + b.velocityY;
 
-        // 底部
+        // 底部碰撞
         if (newY + b.size/2 >= containerHeight) {
           newY = containerHeight - b.size/2;
-          // 若速度很小 => 歸零 => 表示安定 => 檢查警戒線
+          // 若速度夠小 => 歸零 =>「安定」=> 再檢查警戒
           if (Math.abs(b.velocityY) < 1) {
             b.velocityY = 0;
-            checkWarningZone(); 
+            checkWarningZone(); // 只在安定後才檢查
           } else {
+            // 小彈
             b.velocityY = -0.3 * b.velocityY;
           }
         }
 
-        // 左右邊界
+        // 左右牆
         let newX = b.x + b.velocityX;
         if (newX - b.size/2 < 0) {
           newX = b.size/2;
@@ -473,15 +443,15 @@
           let dy = A.y - B.y;
           let dist = Math.sqrt(dx*dx + dy*dy);
           let minDist = (A.size + B.size)/2;
-
           if (dist < minDist) {
             if (A.size === B.size) {
+              // 同尺寸 => 合併
               mergeBalls(A,B,i,j);
-              return; 
+              return; // 合併後結構改變，跳出
             } else {
+              // 不同尺寸 => 彈開
               resolveCollision(A,B);
-              fixOverlap(A,B, dist, minDist);
-              // 避免多次同框 => 不馬上檢查警戒
+              fixOverlap(A,B,dist,minDist);
             }
           }
         }
@@ -489,16 +459,19 @@
     }
 
     /**
-     * 同尺寸 => 合併 => 完成後檢查警戒
+     * 同尺寸 => 合併後再檢查警戒 (安定or立刻檢?)
+     * 這裡合併完 => 直接呼叫 checkWarningZone()，
+     * 若球合併在頂端 => 可能立即結束
      */
     function mergeBalls(ballA, ballB, idxA, idxB) {
-      let idx = BALL_CONFIGS.findIndex(cfg => cfg.size === ballA.size);
-      let nextIndex = idx+1;
-      if (nextIndex >= BALL_CONFIGS.length) {
-        nextIndex = BALL_CONFIGS.length -1;
+      let iCfg = BALL_CONFIGS.findIndex(c => c.size===ballA.size);
+      let nextIdx = iCfg+1;
+      if (nextIdx>=BALL_CONFIGS.length) {
+        nextIdx = BALL_CONFIGS.length-1;
       }
-      let newCfg = BALL_CONFIGS[nextIndex];
+      const newCfg = BALL_CONFIGS[nextIdx];
 
+      // 新球
       let merged = {
         x: (ballA.x + ballB.x)/2,
         y: (ballA.y + ballB.y)/2,
@@ -510,7 +483,6 @@
         id: Date.now() + Math.random()
       };
 
-      // 移除舊
       let imax = Math.max(idxA, idxB);
       let imin = Math.min(idxA, idxB);
       balls.splice(imax,1);
@@ -521,14 +493,10 @@
       score += newCfg.score;
       scoreText.textContent = '分數: ' + score;
 
-      // 合併完檢查警戒線
+      // 合併完檢查 (球一出現就可能在頂端)
       checkWarningZone();
     }
 
-    /**
-     * 不同尺寸 => 彈開
-     * 不馬上檢查警戒 => 之後看是否要在「速度很小」再檢查
-     */
     function resolveCollision(A,B) {
       let dx = B.x - A.x;
       let dy = B.y - A.y;
@@ -536,7 +504,6 @@
 
       let speedA = Math.sqrt(A.velocityX**2 + A.velocityY**2);
       let speedB = Math.sqrt(B.velocityX**2 + B.velocityY**2);
-
       let dirA = Math.atan2(A.velocityY, A.velocityX);
       let dirB = Math.atan2(B.velocityY, B.velocityX);
 
@@ -558,8 +525,7 @@
       B.velocityX = finalBX;
       B.velocityY = finalBY;
     }
-
-    function fixOverlap(A,B, dist, minDist) {
+    function fixOverlap(A,B,dist,minDist) {
       let overlap = (minDist - dist)/2;
       let angle = Math.atan2(B.y - A.y, B.x - A.x);
       A.x -= overlap*Math.cos(angle);
@@ -569,32 +535,54 @@
     }
 
     /********************************************************
-     * J. 繪製
+     * J. 安定後才檢查警戒
+     ********************************************************/
+    function checkWarningZone() {
+      let showWarning = false;
+      for (let b of balls) {
+        let bottom = b.y + b.size/2;
+        // 若底部 < WARNING_ZONE => game over
+        if (bottom < WARNING_ZONE) {
+          endGame();
+          return;
+        }
+        // 否則若底部接近 => 顯示
+        if (bottom < WARNING_ZONE+50) {
+          showWarning = true;
+        }
+      }
+      warningLine.style.display = showWarning ? 'block' : 'none';
+    }
+
+    /********************************************************
+     * K. 繪製
      ********************************************************/
     function render() {
-      let oldBalls = gameContainer.querySelectorAll('.placed-ball, .current-ball');
-      oldBalls.forEach(el => el.remove());
+      // 清空
+      const oldEls = gameContainer.querySelectorAll('.placed-ball, .current-ball');
+      oldEls.forEach(el => el.remove());
 
+      // currentBall(尚未放下的球) => 固定頂端
       if (currentBall && !gameOver) {
-        let cb = document.createElement('div');
+        const cb = document.createElement('div');
         cb.className = 'current-ball';
-        cb.style.width  = currentBall.size+'px';
-        cb.style.height = currentBall.size+'px';
+        cb.style.width  = currentBall.size + 'px';
+        cb.style.height = currentBall.size + 'px';
         cb.style.backgroundColor = currentBall.color;
-        
+
         let r = currentBall.size/2;
-        // 這裡讓 currentBall 固定顯示在容器頂 => y=r
+        // 顯示在頂端 => top=0 => 讓球完整可見
         cb.style.left = (mouseX - r) + 'px';
-        cb.style.top  = (r - r) + 'px'; // => 0px
-        // 如果你想直接用 currentBall.y => 也行 (但因還未 place)
+        cb.style.top  = '0px';
         gameContainer.appendChild(cb);
       }
 
+      // 已放置的球
       for (let b of balls) {
-        let pb = document.createElement('div');
+        const pb = document.createElement('div');
         pb.className = 'placed-ball';
-        pb.style.width  = b.size+'px';
-        pb.style.height = b.size+'px';
+        pb.style.width  = b.size + 'px';
+        pb.style.height = b.size + 'px';
         pb.style.backgroundColor = b.color;
         pb.style.left = (b.x - b.size/2) + 'px';
         pb.style.top  = (b.y - b.size/2) + 'px';
@@ -603,37 +591,38 @@
     }
 
     /********************************************************
-     * K. 結束 & 重新開始
+     * L. 結束 & 重新開始
      ********************************************************/
     function endGame() {
       gameOver = true;
-      gameOverMask.style.display = 'flex';
-      finalScoreText.textContent = '最終分數: ' + score;
+      gameOverMask.style.display='flex';
+      finalScoreText.textContent='最終分數: ' + score;
 
       // 更新最佳
       if (score> bestScore) {
-        bestScore = score;
-        localStorage.setItem(STORAGE_KEY,bestScore);
+        bestScore=score;
+        localStorage.setItem(STORAGE_KEY, bestScore);
       }
     }
 
     function resetGame(e) {
       e.stopPropagation();
-      gameOver = false;
-      balls = [];
+      gameOver=false;
+      balls=[];
       score=0;
-      scoreText.textContent = '分數: 0';
+      scoreText.textContent='分數: 0';
       finalScoreText.textContent='最終分數: 0';
       gameOverMask.style.display='none';
+      warningLine.style.display='none';
 
       currentBall=null;
       nextBall=null;
-      mouseX = containerWidth / 2;
-      generateNewBall();
-      generateNewBall();
-      bestScoreText.textContent = '歷史最佳: ' + bestScore;
+      mouseX=containerWidth/2;
 
-      warningLine.style.display='none';
+      generateNewBall();
+      generateNewBall();
+
+      bestScoreText.textContent='歷史最佳: ' + bestScore;
     }
   </script>
 </body>
