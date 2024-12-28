@@ -153,7 +153,7 @@
       display: flex;
       flex-direction: row;
       justify-content: center;
-      gap: 1rem;
+      gap: 2rem;
       flex-wrap: wrap;
       max-width: 600px;
     }
@@ -211,16 +211,16 @@
      * A. 設定 (預留 image)
      ********************************************************/
     const BALL_CONFIGS = [
-      { size: 30,   color: '#FF9999', score: 2,   image: null }, // 大小1
-      { size: 45,  color: '#99FF99', score: 4,   image: null }, // 大小2
-      { size: 70,  color: '#9999FF', score: 8,   image: null }, // 大小3
-      { size: 90,  color: '#FFFF99', score: 16,  image: null }, // 大小4
-      { size: 110,  color: '#FF99FF', score: 32,  image: null }, // 大小5
-      { size: 140,  color: '#99FFFF', score: 64,  image: null }, // 大小6
-      { size: 180,  color: '#FF8000', score: 128, image: null }, // 大小7
-      { size: 230,  color: '#8000FF', score: 256, image: null }, // 大小8
-      { size: 280,  color: '#FF0080', score: 512, image: null }, // 大小9
-      { size: 400,  color: '#0080FF', score: 1024,image: null }  // 大小10
+      { size: 30,   color: '#FF9999', score: 2,   image: 'https://raw.githubusercontent.com/410736030/PBEG/main/img/B1.png' }, // 大小1
+      { size: 45,  color: '#99FF99', score: 4,    image: 'https://raw.githubusercontent.com/410736030/PBEG/main/img/B2.png' }, // 大小2
+      { size: 70,  color: '#9999FF', score: 8,    image: 'https://raw.githubusercontent.com/410736030/PBEG/main/img/B3.png' }, // 大小3
+      { size: 90,  color: '#FFFF99', score: 16,   image: 'https://raw.githubusercontent.com/410736030/PBEG/main/img/B4.png' }, // 大小4
+      { size: 110,  color: '#FF99FF', score: 32,  image: 'https://raw.githubusercontent.com/410736030/PBEG/main/img/B5.png' }, // 大小5
+      { size: 140,  color: '#99FFFF', score: 64,  image: 'https://raw.githubusercontent.com/410736030/PBEG/main/img/B6.png' }, // 大小6
+      { size: 180,  color: '#FF8000', score: 128, image: 'https://raw.githubusercontent.com/410736030/PBEG/main/img/B7.png' }, // 大小7
+      { size: 230,  color: '#8000FF', score: 256, image: 'https://raw.githubusercontent.com/410736030/PBEG/main/img/B8.png' }, // 大小8
+      { size: 280,  color: '#FF0080', score: 512, image: 'https://raw.githubusercontent.com/410736030/PBEG/main/img/B9.png' }, // 大小9
+      { size: 400,  color: '#0080FF', score: 1024,image: 'https://raw.githubusercontent.com/410736030/PBEG/main/img/B10.png' }  // 大小10
     ];
     const MAX_INDEX_FOR_RANDOM = 4;  
     // 容器大小
@@ -317,7 +317,7 @@
         }
 
         const label = document.createElement('span');
-        label.textContent = `大小${i+1}`;
+        //label.textContent = `大小${i+1}`;
 
         div.appendChild(ballDiv);
         div.appendChild(label);
