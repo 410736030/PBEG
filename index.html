@@ -12,11 +12,14 @@
     html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
+      width: 100%;
+      height: 100vh;
       overflow: hidden;
       touch-action: none;
       font-family: sans-serif;
-      background: #f0f0f0;
+      background: url('https://raw.githubusercontent.com/410736030/PBEG/main/img/BG.png') no-repeat center center fixed;
+      background-size: cover;
+      opacity: 0.9;
     }
 
     .main {
@@ -212,9 +215,9 @@
      ********************************************************/
     const BALL_CONFIGS = [
       { size: 30,   color: '#FF9999', score: 2,   image: 'https://raw.githubusercontent.com/410736030/PBEG/main/img/B1.png' }, // 大小1
-      { size: 45,  color: '#99FF99', score: 4,    image: 'https://raw.githubusercontent.com/410736030/PBEG/main/img/B2.png' }, // 大小2
-      { size: 70,  color: '#9999FF', score: 8,    image: 'https://raw.githubusercontent.com/410736030/PBEG/main/img/B3.png' }, // 大小3
-      { size: 90,  color: '#FFFF99', score: 16,   image: 'https://raw.githubusercontent.com/410736030/PBEG/main/img/B4.png' }, // 大小4
+      { size: 45,   color: '#99FF99', score: 4,   image: 'https://raw.githubusercontent.com/410736030/PBEG/main/img/B2.png' }, // 大小2
+      { size: 70,   color: '#9999FF', score: 8,   image: 'https://raw.githubusercontent.com/410736030/PBEG/main/img/B3.png' }, // 大小3
+      { size: 90,   color: '#FFFF99', score: 16,  image: 'https://raw.githubusercontent.com/410736030/PBEG/main/img/B4.png' }, // 大小4
       { size: 110,  color: '#FF99FF', score: 32,  image: 'https://raw.githubusercontent.com/410736030/PBEG/main/img/B5.png' }, // 大小5
       { size: 140,  color: '#99FFFF', score: 64,  image: 'https://raw.githubusercontent.com/410736030/PBEG/main/img/B6.png' }, // 大小6
       { size: 180,  color: '#FF8000', score: 128, image: 'https://raw.githubusercontent.com/410736030/PBEG/main/img/B7.png' }, // 大小7
